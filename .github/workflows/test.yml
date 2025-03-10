@@ -19,6 +19,11 @@ jobs:
 
     - name: Build
       run: go build -v ./...
+    
+    - name: Run linters
+      uses: golangci/golangci-lint-action@2e788936b09dd82dc280e845628a40d2ba6b204c # v6.3.1
+      with:
+        version: latest
 
     - name: Test
       run: go test -v ./...
