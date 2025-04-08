@@ -1,4 +1,4 @@
-package googleplay
+package authorization
 
 type ServiceAccount struct {
 	Type                    string `json:"type"`
