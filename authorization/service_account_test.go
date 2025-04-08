@@ -24,7 +24,8 @@ func TestJsonDecoding(t *testing.T) {
 	}`
 
 	account := ServiceAccount{}
-	json.Unmarshal([]byte(rawJson), &account)
+	err := json.Unmarshal([]byte(rawJson), &account)
+	assert.NoError(t, err)
 
 	assert.Equal(t, account.Type, "service_account")
 	assert.Equal(t, account.ProjectID, "xyz")
