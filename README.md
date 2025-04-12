@@ -6,7 +6,13 @@ This project is still a work-in-progress, but will be used to enable managing re
 
 ## Usage
 
-**This repository is still a work-in-progress. Example usage will be added in a future pull request.**
+See `main.go` for example usage.
+
+The main method can be called using:
+
+```bash
+go run main.go "~/path/to/service-account.json" "DEVELOPER_ACCOUNT_ID"
+```
 
 ## Contributing
 

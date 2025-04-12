@@ -6,15 +6,31 @@ import (
 	"fmt"
 	"googleplay-go/networking"
 	"net/http"
+	"net/url"
 )
 
-func ListUsers(c networking.HTTPClient, ctx context.Context, url string) ([]User, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
+func ListUsers(c networking.HTTPClient, ctx context.Context, rawURL string) ([]User, error) {
+	// Parse the raw URL
+	parsedURL, err := url.Parse(rawURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse URL: %w", err)
+	}
+
+	// Add the "page_size" query parameter
+	query := parsedURL.Query()
+	query.Set("page_size", "-1")
+	parsedURL.RawQuery = query.Encode()
+
+	// Create the HTTP request
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, parsedURL.String(), http.NoBody)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	resp, _ := c.Do(req)
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
 
 	userListResponse := new(userListResponse)
 	if err := json.NewDecoder(resp.Body).Decode(userListResponse); err != nil {

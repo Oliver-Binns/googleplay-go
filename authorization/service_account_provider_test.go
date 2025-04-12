@@ -47,8 +47,9 @@ func TestTokenSource_Token(t *testing.T) {
 	assert.Equal(t, acc.ClientEmail, claims["iss"])
 	assert.Equal(t, acc.ClientEmail, claims["sub"])
 
-	// Contains the correct audience
-	assert.Equal(t, "https://firestore.googleapis.com/", claims["aud"])
+	// Contains the correct audience and scope:
+	assert.Equal(t, "https://oauth2.googleapis.com/token", claims["aud"])
+	assert.Equal(t, "https://www.googleapis.com/auth/androidpublisher", claims["scope"])
 
 	// Issued time is between the start of the test and now
 	assert.GreaterOrEqual(t, claims["iat"], testStartTime)

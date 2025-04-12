@@ -26,7 +26,7 @@ func TestListUsers_MakesRequest(t *testing.T) {
 
 	assert.Equal(t, len(httpClient.requests), 1)
 	assert.Equal(t, httpClient.requests[0].Method, "GET")
-	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com")
+	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com?page_size=-1")
 }
 
 func TestListUsers_DecodesResponse(t *testing.T) {
