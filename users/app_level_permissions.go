@@ -1,4 +1,4 @@
-package googleplay
+package users
 
 type AppLevelPermission string
 

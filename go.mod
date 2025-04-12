@@ -1,4 +1,4 @@
-module github.com/oliver-binns/googleplay-go
+module googleplay-go
 
 go 1.22
 
