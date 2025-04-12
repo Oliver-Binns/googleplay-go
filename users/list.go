@@ -16,8 +16,8 @@ func ListUsers(c networking.HTTPClient, ctx context.Context, url string) ([]User
 
 	resp, _ := c.Do(req)
 
-	users := new([]User)
-	if err := json.NewDecoder(resp.Body).Decode(users); err != nil {
+	userListResponse := new(userListResponse)
+	if err := json.NewDecoder(resp.Body).Decode(userListResponse); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
@@ -25,5 +25,10 @@ func ListUsers(c networking.HTTPClient, ctx context.Context, url string) ([]User
 		return nil, fmt.Errorf("failed to close response body: %w", err)
 	}
 
-	return *users, nil
+	return userListResponse.Users, nil
+}
+
+type userListResponse struct {
+	Users         []User `json:"users"`
+	NextPageToken string `json:"nextPageToken"`
 }

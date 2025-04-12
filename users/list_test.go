@@ -29,6 +29,34 @@ func TestListUsers_MakesRequest(t *testing.T) {
 	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com")
 }
 
+func TestListUsers_DecodesResponse(t *testing.T) {
+	httpClient := &mockHTTPClient{
+		response: `{
+			"users": [
+				{
+					"name": "Oliver Binns",
+					"email": "mail@oliverbinns.co.uk",
+					"accessState": "ACCESS_GRANTED",
+					"partial": false,
+					"developerAccountPermissions": [ ],
+					"grants": [ ]
+				}
+			],
+			"nextPageToken": ""
+		}`,
+	}
+
+	users, _ := ListUsers(
+		httpClient, context.Background(), "https://example.com",
+	)
+
+	assert.Equal(t, len(users), 1)
+
+	assert.Equal(t, users[0].Name, "Oliver Binns")
+	assert.Equal(t, users[0].Email, "mail@oliverbinns.co.uk")
+	assert.Equal(t, users[0].AccessState, AccessGranted)
+}
+
 type mockHTTPClient struct {
 	requests []*http.Request
 	response string
