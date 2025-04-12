@@ -57,11 +57,12 @@ func (ts *tokenSource) refresh() (string, error) {
 	exp := iat.Add(ts.expiresIn)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
-		"iss": ts.account.ClientEmail,
-		"sub": ts.account.ClientEmail,
-		"aud": "https://firestore.googleapis.com/",
-		"iat": iat.Unix(),
-		"exp": exp.Unix(),
+		"iss":   ts.account.ClientEmail,
+		"sub":   ts.account.ClientEmail,
+		"scope": "https://www.googleapis.com/auth/androidpublisher",
+		"aud":   "https://oauth2.googleapis.com/token",
+		"iat":   iat.Unix(),
+		"exp":   exp.Unix(),
 	})
 	token.Header["alg"] = "RS256"
 	token.Header["typ"] = "JWT"
