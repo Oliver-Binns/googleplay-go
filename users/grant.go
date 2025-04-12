@@ -1,4 +1,4 @@
-package googleplay
+package users
 
 type Grant struct {
 	Name                string               `json:"name"`
