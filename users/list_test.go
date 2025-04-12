@@ -3,7 +3,7 @@ package users
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 
@@ -37,7 +37,7 @@ type mockHTTPClient struct {
 func (c *mockHTTPClient) Do(req *http.Request) (*http.Response, error) {
 	c.requests = append(c.requests, req)
 
-	responseBody := ioutil.NopCloser(bytes.NewReader([]byte(c.response)))
+	responseBody := io.NopCloser(bytes.NewReader([]byte(c.response)))
 
 	return &http.Response{
 		StatusCode: http.StatusOK,

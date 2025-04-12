@@ -20,7 +20,10 @@ func ListUsers(c networking.HTTPClient, ctx context.Context, url string) ([]User
 	if err := json.NewDecoder(resp.Body).Decode(users); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
-	defer resp.Body.Close()
+
+	if err := resp.Body.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close response body: %w", err)
+	}
 
 	return *users, nil
 }
