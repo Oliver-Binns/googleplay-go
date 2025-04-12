@@ -51,8 +51,8 @@ func TestTokenSource_Token(t *testing.T) {
 	assert.Equal(t, "https://firestore.googleapis.com/", claims["aud"])
 
 	// Issued time is between the start of the test and now
-	assert.GreaterOrEqual(t, testStartTime, claims["iat"])
-	assert.LessOrEqual(t, float64(time.Now().Unix()), claims["iat"])
+	assert.GreaterOrEqual(t, claims["iat"], testStartTime)
+	assert.LessOrEqual(t, claims["iat"], float64(time.Now().Unix()))
 
 	// Expiration time is one hour after issued time
 	assert.Equal(t, claims["iat"].(float64)+3600, claims["exp"])
