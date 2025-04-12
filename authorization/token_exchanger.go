@@ -40,12 +40,18 @@ func (t *tokenExchanger) Token() (string, error) {
 	}
 
 	url := "https://www.googleapis.com/oauth2/v4/token"
-	body := fmt.Appendf(nil, `{
-		"grant_type":    "urn:ietf:params:oauth:grant-type:jwt-bearer",
-		"assertion":     "%s",
-	}`, token)
+	tokenExchangeRequest := tokenExchangeRequest{
+		GrantType: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+		Assertion: token,
+	}
 
-	req, err := http.NewRequestWithContext(t.context, http.MethodPost, url, bytes.NewBuffer(body))
+	body := bytes.NewBuffer(nil)
+	err = json.NewEncoder(body).Encode(tokenExchangeRequest)
+	if err != nil {
+		return "", fmt.Errorf("failed to encode request body: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(t.context, http.MethodPost, url, body)
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %w", err)
 	}
@@ -60,7 +66,7 @@ func (t *tokenExchanger) Token() (string, error) {
 		return "", fmt.Errorf("unexpected status code from request: %d", resp.StatusCode)
 	}
 
-	tokenResp := new(tokenResponse)
+	tokenResp := new(tokenExchangeResponse)
 	if err := json.NewDecoder(resp.Body).Decode(tokenResp); err != nil {
 		return "", fmt.Errorf("failed to decode response: %w", err)
 	}
@@ -72,6 +78,11 @@ func (t *tokenExchanger) Token() (string, error) {
 	return tokenResp.AccessToken, err
 }
 
-type tokenResponse struct {
+type tokenExchangeRequest struct {
+	GrantType string `json:"grant_type"`
+	Assertion string `json:"assertion"`
+}
+
+type tokenExchangeResponse struct {
 	AccessToken string `json:"access_token"`
 }
