@@ -5,8 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"googleplay-go/networking"
 	"net/http"
+
+	"github.com/oliver-binns/googleplay-go/networking"
 )
 
 func Create(c networking.HTTPClient, ctx context.Context, url string, user User) (*User, error) {
