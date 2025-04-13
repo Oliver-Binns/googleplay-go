@@ -20,7 +20,7 @@ func TestListUsers_MakesRequest(t *testing.T) {
 		}`,
 	}
 
-	_, _ = ListUsers(
+	_, _ = List(
 		httpClient, context.Background(), "https://example.com",
 	)
 
@@ -46,7 +46,7 @@ func TestListUsers_DecodesResponse(t *testing.T) {
 		}`,
 	}
 
-	users, _ := ListUsers(
+	users, _ := List(
 		httpClient, context.Background(), "https://example.com",
 	)
 
