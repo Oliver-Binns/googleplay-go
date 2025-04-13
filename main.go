@@ -31,10 +31,9 @@ func main() {
 		developer_id,
 	)
 
-	users, err := users.ListUsers(client, context.Background(), url)
+	usersList, err := users.List(client, context.Background(), url)
 	check(err)
-
-	fmt.Println("Hello World", users)
+	fmt.Println("User list: ", usersList)
 }
 
 func check(e error) {

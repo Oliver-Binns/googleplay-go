@@ -1,0 +1,40 @@
+package users
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"googleplay-go/networking"
+	"net/http"
+)
+
+func Create(c networking.HTTPClient, ctx context.Context, url string, user User) (*User, error) {
+	body := bytes.NewBuffer(nil)
+	err := json.NewEncoder(body).Encode(user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode request body: %w", err)
+	}
+
+	// Create the HTTP request
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	newUser := new(User)
+	if err := json.NewDecoder(resp.Body).Decode(newUser); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	if err := resp.Body.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close response body: %w", err)
+	}
+
+	return newUser, nil
+}

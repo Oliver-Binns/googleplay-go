@@ -9,7 +9,7 @@ import (
 	"net/url"
 )
 
-func ListUsers(c networking.HTTPClient, ctx context.Context, rawURL string) ([]User, error) {
+func List(c networking.HTTPClient, ctx context.Context, rawURL string) ([]User, error) {
 	// Parse the raw URL
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
