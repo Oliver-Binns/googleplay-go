@@ -60,6 +60,8 @@ func TestListUsers_DecodesResponse(t *testing.T) {
 type mockHTTPClient struct {
 	requests []*http.Request
 	response string
+
+	statusCode *int
 }
 
 func (c *mockHTTPClient) Do(req *http.Request) (*http.Response, error) {
@@ -67,8 +69,13 @@ func (c *mockHTTPClient) Do(req *http.Request) (*http.Response, error) {
 
 	responseBody := io.NopCloser(bytes.NewReader([]byte(c.response)))
 
+	status := http.StatusOK
+	if c.statusCode != nil {
+		status = *c.statusCode
+	}
+
 	return &http.Response{
-		StatusCode: http.StatusOK,
+		StatusCode: status,
 		Body:       responseBody,
 	}, nil
 }

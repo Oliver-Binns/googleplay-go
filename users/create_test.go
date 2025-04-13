@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateUsers_MakesRequest(t *testing.T) {
+func TestCreateUser_MakesRequest(t *testing.T) {
 	httpClient := &mockHTTPClient{
 		response: `{ }`,
 	}
@@ -36,7 +36,7 @@ func TestCreateUsers_MakesRequest(t *testing.T) {
 `)
 }
 
-func TestCreateUsers_DecodesResponse(t *testing.T) {
+func TestCreateUser_DecodesResponse(t *testing.T) {
 	httpClient := &mockHTTPClient{
 		response: `{
 			"name": "John Doe",

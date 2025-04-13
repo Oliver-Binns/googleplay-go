@@ -24,6 +24,19 @@ func TestNewAuthorizedClient_AuthorizationHeaderIsSet(t *testing.T) {
 	)
 }
 
+func TestNewAuthorizedClient_Allows2XXStatusCodes(t *testing.T) {
+	httpClient := &mockHTTPClient{
+		statusCode: http.StatusNoContent,
+	}
+	tokenSource := &mockTokenSource{}
+
+	authorizedClient := NewAuthorizedClient(httpClient, tokenSource)
+	req, _ := http.NewRequest("GET", "https://example.com", nil)
+	_, err := authorizedClient.Do(req)
+
+	assert.NoError(t, err)
+}
+
 func TestNewAuthorizedClient_ThrowsErrorForUnexpectedStatusCode(t *testing.T) {
 	httpClient := &mockHTTPClient{
 		statusCode: http.StatusUnauthorized,
