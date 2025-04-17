@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"googleplay-go/authorization"
-	"googleplay-go/networking"
-	"googleplay-go/users"
 	"net/http"
 	"os"
+
+	"github.com/oliver-binns/googleplay-go/authorization"
+	"github.com/oliver-binns/googleplay-go/networking"
+	"github.com/oliver-binns/googleplay-go/users"
 )
 
 func main() {
@@ -34,6 +35,22 @@ func main() {
 	usersList, err := users.List(client, context.Background(), url)
 	check(err)
 	fmt.Println("User list: ", usersList)
+
+	newUserRequest := users.User{
+		Name:  "John Doe",
+		Email: "john.doe@oliverbinns.co.uk",
+		DeveloperAccountPermission: []users.DeveloperLevelPermission{
+			users.CanReplyToReviewsGlobal,
+		},
+	}
+
+	newUser, err := users.Create(client, context.Background(), url, newUserRequest)
+	check(err)
+	fmt.Println("Created user: ", newUser)
+
+	err = users.Delete(client, context.Background(), url, newUser.Email)
+	check(err)
+	fmt.Println("Deleted user: ", newUser.Email)
 }
 
 func check(e error) {

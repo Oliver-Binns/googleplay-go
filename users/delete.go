@@ -3,10 +3,11 @@ package users
 import (
 	"context"
 	"fmt"
-	"googleplay-go/networking"
 	"net/http"
 	"net/url"
 	"path"
+
+	"github.com/oliver-binns/googleplay-go/networking"
 )
 
 func Delete(c networking.HTTPClient, ctx context.Context, baseURL string, email string) error {
