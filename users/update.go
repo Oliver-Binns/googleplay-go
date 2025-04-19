@@ -18,7 +18,6 @@ func Update(
 	ctx context.Context,
 	rawURL string,
 	email string,
-	name *string,
 	permissions *[]DeveloperLevelPermission,
 ) (*User, error) {
 	// Parse the raw URL
@@ -31,10 +30,6 @@ func Update(
 	updateMask := []string{}
 
 	user := UserUpdateRequest{}
-	if name != nil {
-		updateMask = append(updateMask, "name")
-		user.Name = *name
-	}
 
 	if permissions != nil {
 		updateMask = append(updateMask, "developerAccountPermissions")
@@ -77,6 +72,5 @@ func Update(
 }
 
 type UserUpdateRequest struct {
-	Name                        string                     `json:"name,omitempty"`
 	DeveloperAccountPermissions []DeveloperLevelPermission `json:"developerAccountPermissions,omitempty"`
 }

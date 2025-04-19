@@ -17,7 +17,6 @@ func TestUpdateUsers_MakesRequestWithNoValues(t *testing.T) {
 		httpClient, context.Background(), "https://example.com",
 		"example@oliverbinns.co.uk",
 		nil,
-		nil,
 	)
 
 	assert.Equal(t, len(httpClient.requests), 1)
@@ -29,31 +28,6 @@ func TestUpdateUsers_MakesRequestWithNoValues(t *testing.T) {
 	bodyString := string(bodyBytes)
 	assert.Equal(t, bodyString,
 		`{}
-`)
-}
-
-func TestUpdateUsers_MakesRequestWithName(t *testing.T) {
-	httpClient := &mockHTTPClient{
-		response: `{ }`,
-	}
-
-	name := "John Doe"
-	_, _ = Update(
-		httpClient, context.Background(), "https://example.com",
-		"example@oliverbinns.co.uk",
-		&name,
-		nil,
-	)
-
-	assert.Equal(t, len(httpClient.requests), 1)
-	assert.Equal(t, httpClient.requests[0].Method, "PATCH")
-	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com/example@oliverbinns.co.uk?updateMask=name")
-
-	bodyBytes, err := io.ReadAll(httpClient.requests[0].Body)
-	assert.NoError(t, err)
-	bodyString := string(bodyBytes)
-	assert.Equal(t, bodyString,
-		`{"name":"John Doe"}
 `)
 }
 
@@ -69,7 +43,6 @@ func TestUpdateUsers_MakesRequestWithPermissions(t *testing.T) {
 	_, _ = Update(
 		httpClient, context.Background(), "https://example.com",
 		"example@oliverbinns.co.uk",
-		nil,
 		&permissions,
 	)
 
@@ -82,35 +55,6 @@ func TestUpdateUsers_MakesRequestWithPermissions(t *testing.T) {
 	bodyString := string(bodyBytes)
 	assert.Equal(t, bodyString,
 		`{"developerAccountPermissions":["CAN_MANAGE_PERMISSIONS_GLOBAL","CAN_REPLY_TO_REVIEWS_GLOBAL"]}
-`)
-}
-
-func TestUpdateUsers_MakesRequestWithAllParameters(t *testing.T) {
-	httpClient := &mockHTTPClient{
-		response: `{ }`,
-	}
-
-	name := "John Doe"
-	permissions := []DeveloperLevelPermission{
-		CanManagePermissionsGlobal,
-		CanReplyToReviewsGlobal,
-	}
-	_, _ = Update(
-		httpClient, context.Background(), "https://example.com",
-		"example@oliverbinns.co.uk",
-		&name,
-		&permissions,
-	)
-
-	assert.Equal(t, len(httpClient.requests), 1)
-	assert.Equal(t, httpClient.requests[0].Method, "PATCH")
-	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com/example@oliverbinns.co.uk?updateMask=name%2CdeveloperAccountPermissions")
-
-	bodyBytes, err := io.ReadAll(httpClient.requests[0].Body)
-	assert.NoError(t, err)
-	bodyString := string(bodyBytes)
-	assert.Equal(t, bodyString,
-		`{"name":"John Doe","developerAccountPermissions":["CAN_MANAGE_PERMISSIONS_GLOBAL","CAN_REPLY_TO_REVIEWS_GLOBAL"]}
 `)
 }
 
@@ -129,7 +73,6 @@ func TestUpdateUsers_DecodesResponse(t *testing.T) {
 	user, _ := Update(
 		httpClient, context.Background(), "https://example.com",
 		"mail@oliverbinns.co.uk",
-		nil,
 		nil,
 	)
 
