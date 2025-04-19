@@ -64,9 +64,9 @@ func (c *Client) CreateUser(
 
 func (c *Client) UpdateUser(
 	email string,
-	ctx context.Context,
 	name *string,
 	permissions *[]users.DeveloperLevelPermission,
+	ctx context.Context,
 ) (*users.User, error) {
 	url := fmt.Sprintf(
 		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
