@@ -15,13 +15,14 @@ func TestUpdateUsers_MakesRequestWithNoValues(t *testing.T) {
 
 	_, _ = Update(
 		httpClient, context.Background(), "https://example.com",
+		"example@oliverbinns.co.uk",
 		nil,
 		nil,
 	)
 
 	assert.Equal(t, len(httpClient.requests), 1)
 	assert.Equal(t, httpClient.requests[0].Method, "PATCH")
-	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com?updateMask=")
+	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com/example@oliverbinns.co.uk?updateMask=")
 
 	bodyBytes, err := io.ReadAll(httpClient.requests[0].Body)
 	assert.NoError(t, err)
@@ -39,13 +40,14 @@ func TestUpdateUsers_MakesRequestWithName(t *testing.T) {
 	name := "John Doe"
 	_, _ = Update(
 		httpClient, context.Background(), "https://example.com",
+		"example@oliverbinns.co.uk",
 		&name,
 		nil,
 	)
 
 	assert.Equal(t, len(httpClient.requests), 1)
 	assert.Equal(t, httpClient.requests[0].Method, "PATCH")
-	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com?updateMask=name")
+	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com/example@oliverbinns.co.uk?updateMask=name")
 
 	bodyBytes, err := io.ReadAll(httpClient.requests[0].Body)
 	assert.NoError(t, err)
@@ -66,13 +68,14 @@ func TestUpdateUsers_MakesRequestWithPermissions(t *testing.T) {
 	}
 	_, _ = Update(
 		httpClient, context.Background(), "https://example.com",
+		"example@oliverbinns.co.uk",
 		nil,
 		&permissions,
 	)
 
 	assert.Equal(t, len(httpClient.requests), 1)
 	assert.Equal(t, httpClient.requests[0].Method, "PATCH")
-	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com?updateMask=developerAccountPermissions")
+	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com/example@oliverbinns.co.uk?updateMask=developerAccountPermissions")
 
 	bodyBytes, err := io.ReadAll(httpClient.requests[0].Body)
 	assert.NoError(t, err)
@@ -94,13 +97,14 @@ func TestUpdateUsers_MakesRequestWithAllParameters(t *testing.T) {
 	}
 	_, _ = Update(
 		httpClient, context.Background(), "https://example.com",
+		"example@oliverbinns.co.uk",
 		&name,
 		&permissions,
 	)
 
 	assert.Equal(t, len(httpClient.requests), 1)
 	assert.Equal(t, httpClient.requests[0].Method, "PATCH")
-	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com?updateMask=name%2CdeveloperAccountPermissions")
+	assert.Equal(t, httpClient.requests[0].URL.String(), "https://example.com/example@oliverbinns.co.uk?updateMask=name%2CdeveloperAccountPermissions")
 
 	bodyBytes, err := io.ReadAll(httpClient.requests[0].Body)
 	assert.NoError(t, err)
@@ -124,6 +128,7 @@ func TestUpdateUsers_DecodesResponse(t *testing.T) {
 
 	user, _ := Update(
 		httpClient, context.Background(), "https://example.com",
+		"mail@oliverbinns.co.uk",
 		nil,
 		nil,
 	)

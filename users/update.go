@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"path"
 	"strings"
 
 	"github.com/oliver-binns/googleplay-go/networking"
@@ -16,6 +17,7 @@ func Update(
 	c networking.HTTPClient,
 	ctx context.Context,
 	rawURL string,
+	email string,
 	name *string,
 	permissions *[]DeveloperLevelPermission,
 ) (*User, error) {
@@ -24,6 +26,7 @@ func Update(
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)
 	}
+	parsedURL.Path = path.Join(parsedURL.Path, email)
 
 	updateMask := []string{}
 

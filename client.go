@@ -73,7 +73,7 @@ func (c *Client) UpdateUser(
 		c.developerID,
 	)
 
-	return users.Update(*c.client, ctx, url, name, permissions)
+	return users.Update(*c.client, ctx, url, email, name, permissions)
 }
 
 func (c *Client) DeleteUser(email string, ctx context.Context) error {
