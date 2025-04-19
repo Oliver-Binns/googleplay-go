@@ -13,19 +13,19 @@ type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-type authorizedClient struct {
+type AuthorizedClient struct {
 	httpClient  HTTPClient
 	tokenSource TokenSource
 }
 
 func NewAuthorizedClient(httpClient HTTPClient, tokenSource TokenSource) HTTPClient {
-	return &authorizedClient{
+	return &AuthorizedClient{
 		httpClient:  httpClient,
 		tokenSource: tokenSource,
 	}
 }
 
-func (c *authorizedClient) Do(req *http.Request) (*http.Response, error) {
+func (c *AuthorizedClient) Do(req *http.Request) (*http.Response, error) {
 	token, err := c.tokenSource.Token()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get token: %w", err)
