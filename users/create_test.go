@@ -14,9 +14,9 @@ func TestCreateUser_MakesRequest(t *testing.T) {
 	}
 
 	user := User{
-		Name:                       "John Doe",
-		Email:                      "john.doe@example.com",
-		DeveloperAccountPermission: []DeveloperLevelPermission{"CAN_MANAGE_PERMISSIONS_GLOBAL"},
+		Name:                        "John Doe",
+		Email:                       "john.doe@example.com",
+		DeveloperAccountPermissions: []DeveloperLevelPermission{"CAN_MANAGE_PERMISSIONS_GLOBAL"},
 	}
 
 	_, _ = Create(
@@ -61,6 +61,6 @@ func TestCreateUser_DecodesResponse(t *testing.T) {
 	assert.Equal(t, createdUser.Email, "john.doe@example.com")
 	assert.Equal(t, createdUser.AccessState, Invited)
 	assert.Equal(t, createdUser.Partial, false)
-	assert.Equal(t, createdUser.DeveloperAccountPermission, []DeveloperLevelPermission{"CAN_REPLY_TO_REVIEWS_GLOBAL"})
+	assert.Equal(t, createdUser.DeveloperAccountPermissions, []DeveloperLevelPermission{"CAN_REPLY_TO_REVIEWS_GLOBAL"})
 
 }

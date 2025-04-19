@@ -33,23 +33,20 @@ func GooglePlayClient(developerID string, serviceAccountJson string) *Client {
 	}
 }
 
-func (c *Client) ListUsers() ([]users.User, error) {
+func (c *Client) ListUsers(ctx context.Context) ([]users.User, error) {
 	url := fmt.Sprintf(
 		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
 		c.developerID,
 	)
 
-	usersList, err := users.List(*c.client, context.Background(), url)
-	if err != nil {
-		return nil, err
-	}
-	return usersList, nil
+	return users.List(*c.client, ctx, url)
 }
 
 func (c *Client) CreateUser(
 	name string,
 	email string,
 	permission []users.DeveloperLevelPermission,
+	ctx context.Context,
 ) (*users.User, error) {
 	url := fmt.Sprintf(
 		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
@@ -57,29 +54,35 @@ func (c *Client) CreateUser(
 	)
 
 	newUserRequest := users.User{
-		Name:                       name,
-		Email:                      email,
-		DeveloperAccountPermission: permission,
+		Name:                        name,
+		Email:                       email,
+		DeveloperAccountPermissions: permission,
 	}
 
-	newUser, err := users.Create(*c.client, context.Background(), url, newUserRequest)
-	if err != nil {
-		return nil, err
-	}
-	return newUser, nil
+	return users.Create(*c.client, ctx, url, newUserRequest)
 }
 
-func (c *Client) DeleteUser(email string) error {
+func (c *Client) UpdateUser(
+	email string,
+	ctx context.Context,
+	name *string,
+	permissions *[]users.DeveloperLevelPermission,
+) (*users.User, error) {
 	url := fmt.Sprintf(
 		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
 		c.developerID,
 	)
 
-	err := users.Delete(*c.client, context.Background(), url, email)
-	if err != nil {
-		return err
-	}
-	return nil
+	return users.Update(*c.client, ctx, url, name, permissions)
+}
+
+func (c *Client) DeleteUser(email string, ctx context.Context) error {
+	url := fmt.Sprintf(
+		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
+		c.developerID,
+	)
+
+	return users.Delete(*c.client, ctx, url, email)
 }
 
 func check(e error) {
