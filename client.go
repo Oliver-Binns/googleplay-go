@@ -43,7 +43,6 @@ func (c *Client) ListUsers(ctx context.Context) ([]users.User, error) {
 }
 
 func (c *Client) CreateUser(
-	name string,
 	email string,
 	permission []users.DeveloperLevelPermission,
 	ctx context.Context,
@@ -54,7 +53,6 @@ func (c *Client) CreateUser(
 	)
 
 	newUserRequest := users.User{
-		Name:                        name,
 		Email:                       email,
 		DeveloperAccountPermissions: permission,
 	}
