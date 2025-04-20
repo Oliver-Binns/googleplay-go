@@ -4,7 +4,6 @@ type DeveloperLevelPermission string
 
 const (
 	UnspecifiedDeveloperLevelPermission DeveloperLevelPermission = "DEVELOPER_LEVEL_PERMISSION_UNSPECIFIED"
-	CanSeeAllApps                       DeveloperLevelPermission = "CAN_SEE_ALL_APPS"
 	CanViewFinancialDataGlobal          DeveloperLevelPermission = "CAN_VIEW_FINANCIAL_DATA_GLOBAL"
 	CanManagePermissionsGlobal          DeveloperLevelPermission = "CAN_MANAGE_PERMISSIONS_GLOBAL"
 	CanEditGamesGlobal                  DeveloperLevelPermission = "CAN_EDIT_GAMES_GLOBAL"
