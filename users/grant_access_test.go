@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGrantPermission_MakesRequest(t *testing.T) {
+func TestGrantAccess_MakesRequest(t *testing.T) {
 	httpClient := &mockHTTPClient{
 		response: `{ }`,
 	}
@@ -26,11 +26,11 @@ func TestGrantPermission_MakesRequest(t *testing.T) {
 	assert.NoError(t, err)
 	bodyString := string(bodyBytes)
 	assert.Equal(t, bodyString,
-		`{"name":"12345","appLevelPermissions":["CAN_MANAGE_DEEPLINKS"]}
+		`{"name":"12345","packageName":"12345","appLevelPermissions":["CAN_MANAGE_DEEPLINKS"]}
 `)
 }
 
-func TestGrantPermission_DecodesResponse(t *testing.T) {
+func TestGrantAccess_DecodesResponse(t *testing.T) {
 	httpClient := &mockHTTPClient{
 		response: `{
 			"name": "98765",

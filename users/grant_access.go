@@ -19,6 +19,7 @@ func GrantAccess(
 ) (*Grant, error) {
 	grant := Grant{
 		Name:                name,
+		PackageName:         name,
 		AppLevelPermissions: permissions,
 	}
 

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
+	"path"
 
 	"github.com/oliver-binns/googleplay-go/authorization"
 	"github.com/oliver-binns/googleplay-go/networking"
@@ -63,6 +65,51 @@ func (c *Client) UpdateUser(
 
 func (c *Client) DeleteUser(email string, ctx context.Context) error {
 	return users.Delete(*c.client, ctx, c.baseURL, email)
+}
+
+func (c *Client) GrantAccess(
+	email string,
+	appID string,
+	permissions []users.AppLevelPermission,
+	ctx context.Context,
+) (*users.Grant, error) {
+	url, err := c.addToPath([]string{email, "grants"})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users.GrantAccess(*c.client, ctx, *url, appID, permissions)
+}
+
+func (c *Client) RevokeAccess(
+	email string,
+	appID string,
+	ctx context.Context,
+) error {
+	url, err := c.addToPath([]string{email, "grants"})
+
+	if err != nil {
+		return err
+	}
+
+	return users.RevokeAccess(*c.client, ctx, *url, appID)
+}
+
+func (c *Client) addToPath(components []string) (*string, error) {
+	// Parse the raw URL
+	parsedURL, err := url.Parse(c.baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse URL: %w", err)
+	}
+	// Add name to path: this is the package / app ID
+	for _, component := range components {
+		parsedURL.Path = path.Join(parsedURL.Path, component)
+	}
+
+	completeURL := parsedURL.String()
+
+	return &completeURL, nil
 }
 
 func check(e error) {
