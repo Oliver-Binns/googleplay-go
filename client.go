@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
+	"path"
 
 	"github.com/oliver-binns/googleplay-go/authorization"
 	"github.com/oliver-binns/googleplay-go/networking"
@@ -12,8 +14,8 @@ import (
 )
 
 type Client struct {
-	client      *networking.HTTPClient
-	developerID string
+	client  *networking.HTTPClient
+	baseURL string
 }
 
 func GooglePlayClient(developerID string, serviceAccountJson string) *Client {
@@ -28,18 +30,16 @@ func GooglePlayClient(developerID string, serviceAccountJson string) *Client {
 	client := networking.NewAuthorizedClient(http.DefaultClient, tokenExchanger)
 
 	return &Client{
-		client:      &client,
-		developerID: developerID,
+		client: &client,
+		baseURL: fmt.Sprintf(
+			"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
+			developerID,
+		),
 	}
 }
 
 func (c *Client) ListUsers(ctx context.Context) ([]users.User, error) {
-	url := fmt.Sprintf(
-		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
-		c.developerID,
-	)
-
-	return users.List(*c.client, ctx, url)
+	return users.List(*c.client, ctx, c.baseURL)
 }
 
 func (c *Client) CreateUser(
@@ -47,17 +47,12 @@ func (c *Client) CreateUser(
 	permission []users.DeveloperLevelPermission,
 	ctx context.Context,
 ) (*users.User, error) {
-	url := fmt.Sprintf(
-		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
-		c.developerID,
-	)
-
 	newUserRequest := users.User{
 		Email:                       email,
 		DeveloperAccountPermissions: permission,
 	}
 
-	return users.Create(*c.client, ctx, url, newUserRequest)
+	return users.Create(*c.client, ctx, c.baseURL, newUserRequest)
 }
 
 func (c *Client) UpdateUser(
@@ -65,21 +60,71 @@ func (c *Client) UpdateUser(
 	permissions *[]users.DeveloperLevelPermission,
 	ctx context.Context,
 ) (*users.User, error) {
-	url := fmt.Sprintf(
-		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
-		c.developerID,
-	)
-
-	return users.Update(*c.client, ctx, url, email, permissions)
+	return users.Update(*c.client, ctx, c.baseURL, email, permissions)
 }
 
 func (c *Client) DeleteUser(email string, ctx context.Context) error {
-	url := fmt.Sprintf(
-		"https://androidpublisher.googleapis.com/androidpublisher/v3/developers/%s/users",
-		c.developerID,
-	)
+	return users.Delete(*c.client, ctx, c.baseURL, email)
+}
 
-	return users.Delete(*c.client, ctx, url, email)
+func (c *Client) GrantAccess(
+	email string,
+	appID string,
+	permissions []users.AppLevelPermission,
+	ctx context.Context,
+) (*users.Grant, error) {
+	url, err := c.addToPath([]string{email, "grants"})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users.GrantAccess(*c.client, ctx, *url, appID, permissions)
+}
+
+func (c *Client) ModifyAccess(
+	email string,
+	appID string,
+	permissions []users.AppLevelPermission,
+	ctx context.Context,
+) (*users.Grant, error) {
+	url, err := c.addToPath([]string{email, "grants"})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users.ModifyAccess(*c.client, ctx, *url, appID, permissions)
+}
+
+func (c *Client) RevokeAccess(
+	email string,
+	appID string,
+	ctx context.Context,
+) error {
+	url, err := c.addToPath([]string{email, "grants"})
+
+	if err != nil {
+		return err
+	}
+
+	return users.RevokeAccess(*c.client, ctx, *url, appID)
+}
+
+func (c *Client) addToPath(components []string) (*string, error) {
+	// Parse the raw URL
+	parsedURL, err := url.Parse(c.baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse URL: %w", err)
+	}
+	// Add name to path: this is the package / app ID
+	for _, component := range components {
+		parsedURL.Path = path.Join(parsedURL.Path, component)
+	}
+
+	completeURL := parsedURL.String()
+
+	return &completeURL, nil
 }
 
 func check(e error) {
