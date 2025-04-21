@@ -82,6 +82,21 @@ func (c *Client) GrantAccess(
 	return users.GrantAccess(*c.client, ctx, *url, appID, permissions)
 }
 
+func (c *Client) ModifyAccess(
+	email string,
+	appID string,
+	permissions []users.AppLevelPermission,
+	ctx context.Context,
+) (*users.Grant, error) {
+	url, err := c.addToPath([]string{email, "grants"})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users.ModifyAccess(*c.client, ctx, *url, appID, permissions)
+}
+
 func (c *Client) RevokeAccess(
 	email string,
 	appID string,
