@@ -22,3 +22,31 @@ const (
 	CanViewAppQualityGlobal             DeveloperLevelPermission = "CAN_VIEW_APP_QUALITY_GLOBAL"
 	CanManageDeeplinksGlobal            DeveloperLevelPermission = "CAN_MANAGE_DEEPLINKS_GLOBAL"
 )
+
+func (permission DeveloperLevelPermission) Expand() []DeveloperLevelPermission {
+	switch permission {
+	case CanManagePermissionsGlobal:
+		return []DeveloperLevelPermission{
+			permission,
+			CanViewFinancialDataGlobal,
+			CanEditGamesGlobal,
+			CanPublishGamesGlobal,
+			CanReplyToReviewsGlobal,
+			CanManagePublicAPKsGlobal,
+			CanManageTrackAPKsGlobal,
+			CanManageTrackUsersGlobal,
+			CanManagePublicListingGlobal,
+			CanManageDraftAppsGlobal,
+			CanCreateManagedPlayAppsGlobal,
+			CanManageOrdersGlobal,
+			CanManageAppContentGlobal,
+			CanViewNonFinancialDataGlobal,
+			CanViewAppQualityGlobal,
+			CanManageDeeplinksGlobal,
+		}
+	case CanChangeManagedPlaySettingGlobal:
+		return []DeveloperLevelPermission{}
+	default:
+		return []DeveloperLevelPermission{permission}
+	}
+}
