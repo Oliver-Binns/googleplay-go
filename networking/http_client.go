@@ -38,9 +38,5 @@ func (c *authorizedClient) Do(req *http.Request) (*http.Response, error) {
 		return nil, fmt.Errorf("failed to send request: %w", err)
 	}
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("unexpected status code %d", resp.StatusCode)
-	}
-
 	return resp, nil
 }

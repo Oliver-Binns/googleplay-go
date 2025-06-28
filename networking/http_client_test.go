@@ -37,19 +37,6 @@ func TestNewAuthorizedClient_Allows2XXStatusCodes(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestNewAuthorizedClient_ThrowsErrorForUnexpectedStatusCode(t *testing.T) {
-	httpClient := &mockHTTPClient{
-		statusCode: http.StatusUnauthorized,
-	}
-	tokenSource := &mockTokenSource{}
-
-	authorizedClient := NewAuthorizedClient(httpClient, tokenSource)
-	req, _ := http.NewRequest("GET", "https://example.com", nil)
-	_, err := authorizedClient.Do(req)
-
-	assert.Equal(t, err.Error(), "unexpected status code 401")
-}
-
 type mockTokenSource struct{}
 
 func (c *mockTokenSource) Token() (string, error) {
