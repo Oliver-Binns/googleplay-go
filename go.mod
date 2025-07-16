@@ -2,7 +2,7 @@ module github.com/oliver-binns/googleplay-go
 
 go 1.22
 
-require github.com/golang-jwt/jwt/v5 v5.2.2
+require github.com/golang-jwt/jwt/v5 v5.2.3
 
 require github.com/stretchr/testify v1.10.0
 
