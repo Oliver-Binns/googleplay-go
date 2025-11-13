@@ -29,6 +29,17 @@ func GooglePlayClient(developerID string, serviceAccountJson string) *Client {
 	tokenExchanger := authorization.NewTokenExchanger(http.DefaultClient, tokenSource, context.Background())
 	client := networking.NewAuthorizedClient(http.DefaultClient, tokenExchanger)
 
+	return googlePlayClient(developerID, client)
+}
+
+func GooglePlayClientWithToken(developerID string, accessToken string) *Client {
+	tokenSource := authorization.StaticTokenSource(accessToken)
+	client := networking.NewAuthorizedClient(http.DefaultClient, tokenSource)
+
+	return googlePlayClient(developerID, client)
+}
+
+func googlePlayClient(developerID string, client networking.HTTPClient) *Client {
 	return &Client{
 		client: &client,
 		baseURL: fmt.Sprintf(
