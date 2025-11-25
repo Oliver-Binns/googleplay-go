@@ -11,6 +11,8 @@ import (
 	"github.com/oliver-binns/googleplay-go/authorization"
 	"github.com/oliver-binns/googleplay-go/networking"
 	"github.com/oliver-binns/googleplay-go/users"
+
+	"golang.org/x/oauth2/google"
 )
 
 type Client struct {
@@ -32,8 +34,19 @@ func GooglePlayClient(developerID string, serviceAccountJson string) *Client {
 	return googlePlayClient(developerID, client)
 }
 
-func GooglePlayClientWithToken(developerID string, accessToken string) *Client {
-	tokenSource := authorization.StaticTokenSource(accessToken)
+func GooglePlayDefaultClient(developerID string) *Client {
+	source, err := google.DefaultTokenSource(
+		context.Background(),
+		"https://www.googleapis.com/auth/cloud-platform",
+		"https://www.googleapis.com/auth/androidpublisher",
+	)
+
+	check(err)
+
+	token, err := source.Token()
+	check(err)
+
+	tokenSource := authorization.StaticTokenSource(token.AccessToken)
 	client := networking.NewAuthorizedClient(http.DefaultClient, tokenSource)
 
 	return googlePlayClient(developerID, client)
