@@ -28,6 +28,11 @@ func Create(c networking.HTTPClient, ctx context.Context, url string, user User)
 		return nil, err
 	}
 
+	// status should be in 200 range:
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
 	newUser := new(User)
 	if err := json.NewDecoder(resp.Body).Decode(newUser); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
