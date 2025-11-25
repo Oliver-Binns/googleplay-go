@@ -11,6 +11,8 @@ import (
 	"github.com/oliver-binns/googleplay-go/authorization"
 	"github.com/oliver-binns/googleplay-go/networking"
 	"github.com/oliver-binns/googleplay-go/users"
+	"google.golang.org/api/androidpublisher/v3"
+	"google.golang.org/api/option"
 
 	"golang.org/x/oauth2/google"
 )
@@ -45,6 +47,15 @@ func GooglePlayDefaultClient(developerID string) *Client {
 
 	token, err := source.Token()
 	check(err)
+
+	service, err := androidpublisher.NewService(
+		context.Background(), option.WithTokenSource(source),
+	)
+	check(err)
+
+	usersService := androidpublisher.NewUsersService(service)
+	users := usersService.List(developerID)
+	fmt.Println("users: ", users)
 
 	tokenSource := authorization.StaticTokenSource(token.AccessToken)
 	client := networking.NewAuthorizedClient(http.DefaultClient, tokenSource)
