@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/oliver-binns/googleplay-go/networking"
@@ -26,6 +27,14 @@ func Create(c networking.HTTPClient, ctx context.Context, url string, user User)
 	resp, err := c.Do(req)
 	if err != nil {
 		return nil, err
+	}
+
+	// status should be in 200 range:
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		// print response body for debugging
+		respBody, _ := io.ReadAll(resp.Body)
+		fmt.Println("response body:", string(respBody))
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
 	newUser := new(User)
